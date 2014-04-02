@@ -29,20 +29,54 @@ my $data = {
     is_deeply $store->{data}, $data;
 }
 
+ok -e $file;
+
 {
-    ok my $store2 = Data::Dumper::Store->new(file => $file);
-    is_deeply $store2->{data}, $data;
+    ok my $store = Data::Dumper::Store->new(file => $file);
+    is_deeply $store->{data}, $data;
 
-    ok $store2->set('key3', 'val-3');
-    is $store2->get('key3'), 'val-3';
-    is $store2->set('key3', 'val-4')->get('key3'), 'val-4';
+    ok $store->set('key3', 'val-3');
+    is $store->get('key3'), 'val-3';
+    is $store->set('key3', 'val-4')->get('key3'), 'val-4';
 
-    ok $store2->commit();
+    ok $store->commit();
+}
+
+ok -e $file;
+
+{
+    ok my $store = Data::Dumper::Store->new(file => $file);
+    is $store->get('key3'), 'val-4';
+}
+
+my $struct = {
+    cities => [
+        {
+            name    => 'Limassol',
+            country => 'Cyprus',
+            population => 'About 200k',
+        },
+        {
+            name => 'Moscow',
+            country => 'Russia',
+            population => 'About 15M'
+        }
+    ]
+};
+
+{
+    ok my $store = Data::Dumper::Store->new(file => $file);
+    $store->init($struct);
 }
 
 {
-    ok my $store3 = Data::Dumper::Store->new(file => $file);
-    is $store3->get('key3'), 'val-4';
+    ok my $store = Data::Dumper::Store->new(file => $file);
+    is_deeply $store->{data}, $struct;
+}
+
+{
+    my $store = Data::Dumper::Store->new(file => $file);
+
 }
 
 unlink $file;

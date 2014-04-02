@@ -1,0 +1,7 @@
+MANIFEST
+Changes
+README
+README.md
+Makefile.PL
+t/basic.t
+lib/Data/Dumper/Store.pm
